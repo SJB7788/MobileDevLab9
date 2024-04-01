@@ -1,15 +1,14 @@
 plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.jetbrainsKotlinAndroid)
-    id("com.google.devtools.ksp")
 }
 
 android {
-    namespace = "com.example.seungjaelab9"
+    namespace = "com.example.lab9seungjae"
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "com.example.seungjaelab9"
+        applicationId = "com.example.lab9seungjae"
         minSdk = 24
         targetSdk = 34
         versionCode = 1
@@ -24,7 +23,10 @@ android {
     buildTypes {
         release {
             isMinifyEnabled = false
-            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro"
+            )
         }
     }
     compileOptions {
@@ -48,9 +50,7 @@ android {
 }
 
 dependencies {
-    //Room
-    implementation("androidx.room:room-runtime:2.6.1")
-    ksp("androidx.room:room-compiler:2.6.1:2.6.1")
+
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)

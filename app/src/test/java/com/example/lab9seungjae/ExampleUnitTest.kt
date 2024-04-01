@@ -1,4 +1,4 @@
-package com.example.seungjaelab9
+package com.example.lab9seungjae
 
 import org.junit.Test
 
