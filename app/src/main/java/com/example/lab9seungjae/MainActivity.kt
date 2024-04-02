@@ -5,12 +5,15 @@ import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.MaterialTheme
@@ -61,7 +64,6 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun MainContent(usersState: UserState) {
-    // make ui now
     SignupComposable(usersState)
 }
 
@@ -105,39 +107,57 @@ fun SignupComposable(userState: UserState) {
             .fillMaxWidth()
             .padding(10.dp)
     ) {
-        MyTextField(title = "UID", value = signupState.uid, onValueChanged = signupState::onUIDChanged)
-        MyTextField(title = "Username", value = signupState.name, onValueChanged = signupState::onNameChanged)
-        MyTextField(title = "Email", value = signupState.email, onValueChanged = signupState::onEmailChanged)
+        MyTextField(title = "UID", value = signupState.uid,
+            onValueChanged = signupState::onUIDChanged)
+        MyTextField(title = "Username", value = signupState.name,
+            onValueChanged = signupState::onNameChanged)
+        MyTextField(title = "Email", value = signupState.email,
+            onValueChanged = signupState::onEmailChanged)
 
-        Row (
-        )
+        Row ()
         {
             Button(onClick = {
                 val uid = if (signupState.uid == "") { null } else { signupState.uid.toInt() }
                 val user = LocalUser(uid, signupState.name, signupState.email)
                 userState.add(user)
+                Log.e("Testing", userState.users.toString())
         }) {
             Text(text = "Add")
         }
             Button(onClick = {
                 userState.refresh()
-
+                Log.e("Testing", userState.users.toString())
             }) {
                 Text(text = "Refresh")
             }
         }
 
-        for (user in userState.users) {
-            UserCards(name = user.userName.toString(), email = user.email.toString(),
-                userState = userState, user = user)
+        LazyColumn {
+            items(userState.users) { user ->
+                UserCards(
+                    name = user.userName.toString(),
+                    email = user.email.toString(),
+                    userState = userState,
+                    user = user,
+                    signupState = signupState
+                )
+            }
         }
     }
 }
 
 @Composable
-fun UserCards(name: String, email: String, userState: UserState, user: LocalUser) {
+fun UserCards(name: String, email: String, userState: UserState, user: LocalUser,
+              signupState: SignupState) {
     Card (
-        modifier = Modifier.padding(5.dp).fillMaxWidth()
+        modifier = Modifier
+            .padding(5.dp)
+            .fillMaxWidth()
+            .clickable {
+                signupState.uid = user.uid.toString()
+                signupState.name = user.userName.toString()
+                signupState.email = user.email.toString()
+            }
     ) {
         Row (
             modifier = Modifier.fillMaxWidth(),
@@ -149,6 +169,7 @@ fun UserCards(name: String, email: String, userState: UserState, user: LocalUser
             Button(modifier = Modifier.padding(vertical = 5.dp, horizontal = 20.dp),
                 onClick = {
                     userState.delete(user)
+                    Log.e("Testing", userState.users.toString())
                 }
             ) {
                 Text(text = "X")

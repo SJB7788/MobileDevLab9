@@ -1,11 +1,14 @@
 package com.example.lab9seungjae
 
 import android.app.Application
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.room.Delete
 import androidx.room.Room
 
 class UserState(private val repository: UserRepository) {
-    var users = repository.getAll().toMutableList()
+    var users by mutableStateOf(repository.getAll())
 
     fun add(localUser: LocalUser) {
         repository.insertEntity(localUser)
@@ -14,13 +17,11 @@ class UserState(private val repository: UserRepository) {
     @Delete
     fun delete(localUser: LocalUser) {
         repository.delete(localUser)
+        refresh()
     }
 
     fun refresh() {
-        users.apply {
-            clear()
-            addAll(repository.getAll())
-        }
+        users = repository.getAll()
     }
 }
 class MyApp : Application() {
