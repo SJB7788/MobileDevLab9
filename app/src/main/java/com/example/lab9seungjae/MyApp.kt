@@ -1,6 +1,7 @@
 package com.example.lab9seungjae
 
 import android.app.Application
+import androidx.room.Delete
 import androidx.room.Room
 
 class UserState(private val repository: UserRepository) {
@@ -8,6 +9,11 @@ class UserState(private val repository: UserRepository) {
 
     fun add(localUser: LocalUser) {
         repository.insertEntity(localUser)
+    }
+
+    @Delete
+    fun delete(localUser: LocalUser) {
+        repository.delete(localUser)
     }
 
     fun refresh() {
@@ -36,6 +42,11 @@ class UserRepository(private val userDao: UserDao) {
     fun insertEntity(user: LocalUser) {
         userDao.add(user)
     }
+
+    fun delete(user: LocalUser) {
+        userDao.delete(user)
+    }
+
 
     fun getAll(): List<LocalUser> {
         return userDao.getAll()
